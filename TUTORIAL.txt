@@ -1,3 +1,4 @@
+[=======================================================]
 This directory contains the following files and programs:
 
  -rwxr-xr-x  al2tex.pl 
