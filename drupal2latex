@@ -1,0 +1,174 @@
+#!/bin/bash
+## HTML to LaTeX basic converter, for Drupal input. v2.5
+## author marco at angrynerds.com
+## public domain
+## The changelog is in the git. If interested, ask.
+## 
+if [ "$2" = "xelatex" ]; then
+	TEXBACKEND=xelatex
+else
+	TEXBACKEND=pdflatex
+fi
+## some variables
+DESTFILE=$(basename $1 .xml).tex
+CWD=$(pwd)
+TMP=${TMP:-/tmp}
+TEXDIRECTORY=${TEXDIRECTORY:-$CWD/LaTeX_archive}
+PDFDIRECTORY=${PDFDIRECTORY:-$CWD/pdf_archive}
+LOGDIRECTORY=$TEXDIRECTORY/logs
+set -e
+mkdir --mode=775 -p $TEXDIRECTORY
+mkdir --mode=775 -p $PDFDIRECTORY/{a4,letter,a4_imposed,letter_imposed}
+mkdir --mode=775 -p $LOGDIRECTORY
+TEXBASENAME=$(basename $1 .xml)
+PDFNAME=$TEXBASENAME.pdf
+MYNAME=$0
+D2LNAME=$(which d2l.sh)
+generate_string () { 
+	if [ "$MYNAME" == "$D2LNAME" ]; then 
+## start d2l.sh emulation
+if [ -f $PDFDIRECTORY/a4/${TEXBASENAME}_a4.pdf ]; then
+	PDF_LINK1="&nbsp;&nbsp;<a href=\"internal:sites/default/files/pdfs/a4/${TEXBASENAME}_a4.pdf\">a4</a>&nbsp;&nbsp;"
+fi
+if [ -f $PDFDIRECTORY/letter/${TEXBASENAME}_letter.pdf ]; then
+	PDF_LINK2="<a href=\"internal:sites/default/files/pdfs/letter/${TEXBASENAME}_letter.pdf\">letter</a>&nbsp;&nbsp;"
+fi
+if [ -f $PDFDIRECTORY/a4_imposed/${TEXBASENAME}_a4_imposed.pdf ]; then
+	PDF_LINK3="<a href=\"internal:sites/default/files/pdfs/a4_imposed/${TEXBASENAME}_a4_imposed.pdf\">imposed a4</a>&nbsp;&nbsp;"
+fi
+if [ -f $PDFDIRECTORY/letter_imposed/${TEXBASENAME}_letter_imposed.pdf ]; then
+	PDF_LINK4="<a href=\"internal:sites/default/files/pdfs/letter_imposed/${TEXBASENAME}_letter_imposed.pdf\">imposed letter</a>"
+fi
+        echo "$PDF_LINK1 $PDF_LINK2 $PDF_LINK3 $PDF_LINK4" > pdf_string.tmp
+fi
+	# change the mode to 664 for generated files 
+	( chmod 664 $PDFDIRECTORY/*/${TEXBASENAME}* 2> /dev/null )
+	( chmod 664 $TEXDIRECTORY/${TEXBASENAME}* 2> /dev/null )
+	( chmod 664 $LOGDIRECTORY/${TEXBASENAME}* 2> /dev/null )
+}
+
+rm -f $DESTFILE
+echo "I'll move the pdfs in $PDFDIRECTORY, log in $LOGDIRECTORY" 
+if ! which al2tex.pl > /dev/null ; then 
+	echo "al2tex.pl not in your PATH, please read the TUTORIAL.txt"
+fi
+
+clean_the_mess () {
+    rm -f $TEXBASENAME{.aux,.out,.dvi,.toc,.lof,.lot,.ps}
+}
+
+rm -f $PDFNAME
+
+move_the_stuff () {
+	( rm -f $PDFDIRECTORY/$1/${TEXBASENAME}_$1.pdf )
+	( rm -f $TEXDIRECTORY/${TEXBASENAME}_$1.tex )
+	( rm -f $LOGDIRECTORY/${TEXBASENAME}_$1.log )
+	mv $PDFNAME $PDFDIRECTORY/$1/${TEXBASENAME}_$1.pdf
+	cp $DESTFILE $TEXDIRECTORY/${TEXBASENAME}_$1.tex
+	mv $TEXBASENAME.log $LOGDIRECTORY/${TEXBASENAME}_$1.log
+}
+
+
+if [ "$TEXBACKEND" = "xelatex" ]; then
+	al2tex.pl $1 xelatex
+	# leona said fonts are too small
+	sed -i "1s/10pt/12pt/" $DESTFILE  
+else
+	al2tex.pl $1 
+fi
+
+echo "TeXing..."
+
+( $TEXBACKEND -halt-on-error $DESTFILE > /dev/null )
+
+if [ "$?" != "0" ]; then
+	if [ "$TEXBACKEND" = "pdflatex" ]; then
+   		echo "Compilation failed, retrying with XeLaTeX"
+		clean_the_mess
+   		exec $0 $1 xelatex
+	else
+		echo "No way, exiting... So sorry"
+  	 	tail -30 $TEXBASENAME.log
+ 	  	echo "See $TEXBASENAME.log for more infos"
+ 	  	exit 3
+	fi
+fi
+
+# compile the a4 
+$TEXBACKEND -halt-on-error $DESTFILE >/dev/null  
+
+clean_the_mess
+move_the_stuff a4
+
+# compile the letter 
+sed -i "1s/\(\\documentclass\)\(.*\)a4paper\(.*\)/\1\2letterpaper\3/" $DESTFILE
+
+$TEXBACKEND -halt-on-error $DESTFILE >/dev/null  
+$TEXBACKEND -halt-on-error $DESTFILE >/dev/null  
+
+clean_the_mess
+
+move_the_stuff letter 
+
+## count the pages and skip the imposing if not 4 < x < 60
+
+totalpages=$(pdfinfo $PDFDIRECTORY/letter/${TEXBASENAME}_letter.pdf | \
+	grep Pages | sed -e "s/^Pages: *\([0-9]\+\) *$/\1/")
+
+if [ $totalpages -lt 60 -a $totalpages -gt 5 ]; then
+	echo "Building the imposed pdf"
+else
+	echo "File too large or too little, skipping the imposed pdf"
+	rm $DESTFILE
+	generate_string
+	exit 0
+fi
+
+compile_a5 () {
+	
+  $TEXBACKEND -halt-on-error $DESTFILE >/dev/null  
+  $TEXBACKEND -halt-on-error $DESTFILE >/dev/null  
+  pdftops -level3sep ${TEXBASENAME}.pdf - | \
+  	psbook -q | \
+  	psnup -q -2 -Pa5 -p$1  > ${TEXBASENAME}.ps
+  	 
+  # pstops "(0,-0.1cm)"
+  # this is for adjustments
+  
+  ps2pdf -dPDFSETTINGS=/printer \
+	-dUseCIEColor=true \
+	-dPDFA \
+	-sPAPERSIZE=$1 ${TEXBASENAME}.ps
+}
+# compile the a5 to be imposed in the a4 
+sed -i "1s/\(\\documentclass\)\(.*\)letterpaper\(.*\)/\1\2a5paper\3/" $DESTFILE
+
+# get rid of the hyperref package, first 
+# sed -i '1,30s/^ *\\usepackage.*hyperref} *$//' $DESTFILE
+
+# set the geometry
+sed -i '1,30s/^%%%%%geometry%%%%/\\usepackage[a5paper,includeheadfoot,top=0.5in,bottom=0.6in]{geometry}/' $DESTFILE
+
+# sed -i '/\\url/s/\(\\url{[^ #]\+\)\\#/\1#/g' $DESTFILE # this is buggy
+
+compile_a5 a4
+clean_the_mess
+move_the_stuff a4_imposed
+
+# compile the a5 to be imposed in the letterpaper. still in a5 as source 
+
+# set the geometry
+sed -i '1,30s/^\(\\usepackage\).*\({geometry}\)/\1[a5paper,includeheadfoot,top=0.2in,bottom=0.5in]\2/' $DESTFILE
+
+compile_a5 letter
+clean_the_mess
+move_the_stuff letter_imposed
+
+rm $DESTFILE 
+
+generate_string 
+
+
+exit 0
+
+

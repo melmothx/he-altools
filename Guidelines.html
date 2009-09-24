@@ -1,0 +1,365 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Guidelines for the submissions | The Anarchist Library</title>
+</head>
+
+<body>
+
+<h2>Guidelines for the submissions</h2>
+<!-- Guidelines for the submissions -->
+
+<!-- Guidelines for the submissions -->
+
+<h3>Uploading texts</h3>
+
+Texts are uploaded by packing them into one single HTML page (in Drupal, a node). We want the text to be shipped in a single HTML page, even if the book is several hundred pages long.
+
+Uploading is quite simple: once you have an account and have logged in, you will fill out the form that is located on the sidebar at <a href="internal:node/add/library">Create content — Library Entries</a>.  Leave any of the remaining fields blank if you do not have information to put in them (the PDFs field will be filled by the PDF maintainers after processing your text, so you should not worry about them).  Also leave the ADC field empty until we decide what to do with it.
+
+The texts are formatted in filtered HTML: it's just plain text with some HTML tags.  The following HTML tags are permissible: &lt;a&gt; &lt;em&gt; &lt;strong&gt; &lt;cite&gt; &lt;code&gt; &lt;ul&gt; &lt;ol&gt; &lt;li&gt; &lt;dl&gt; &lt;dt&gt; &lt;dd&gt; &lt;pre&gt; &lt;center&gt; &lt;blockquote&gt; &lt;h2&gt; &lt;h3&gt; &lt;h4&gt; &lt;h5&gt; &lt;br /&gt; 
+
+However, the &lt;center&gt; tag should be used only in <a href="internal:node/440">this specific case</a>.
+
+For a general overview, please read our <a href="internal:filter/tips">Tips for composing</a>.
+
+Example:
+
+<pre>
+&lt;em&gt;italics, emphasized&lt;/em&gt; 
+&lt;strong&gt;bold&lt;/strong&gt;
+&lt;blockquote&gt;block of quoted text, for citations, indented.&lt;/blockquote&gt;
+</pre>
+
+Lines and paragraphs break automatically. This means that when you hit Enter you start a new paragraph. Remember: 1 line, 1 paragraph. For better management of the texts, we ask you to leave a blank line between paragraphs.
+
+<pre>
+First paragraph, on a very long line
+
+Second paragraph, on a very long line
+</pre>
+
+<h4>Typographical quotes, dashes and other characters.</h4>
+
+<h5>Quotations mark</h5>
+
+Do your best to avoid the use of the character <strong>"</strong> for quotations. We use the typographical characters <strong>“ ”</strong> or <strong>« »</strong>. Please note that the opening character is not the same as the closing one. While the character <strong>"</strong> is often used for opening and closing, it is typographically nasty, and we don't use it. This is the same for single quotes: opening is not the same as closing, but it is up to you to decide to use the <strong>‘</strong>typographical quotation marks<strong>’</strong> (this is the one we prefer) or the ASCII <strong>`</strong>quotation marks<strong>'</strong> marks.
+
+<h5>Dashes</h5>
+
+Please note the difference between em-dash <strong>—</strong> (which breaks sentences into smaller pieces — similar to parentheses) and the hyphen (<strong>-</strong>), used in joining words such mother-in-law, hunter-gatherer, and so on.
+
+Unfortunately, a lot of texts use hyphens and dashes interchangeably. If this happens in your text, you need to fix it. For example, "mother-in-law" should remain untouched, but for things like "look-I'm here" you have to go through the text, searching for the hyphens and replacing them with -- or — on a case-by-case basis. 
+
+<h4>Further reading and informations</h4>
+
+
+If the text is more than just a simple article, you should read one or more of the following pages:
+
+
+<h5><a href="internal:node/440">Sectioning</a></h5>
+
+<h5><a href="internal:node/441">Footnotes</a></h5>
+
+<h5><a href="internal:node/442">Lists</a></h5>
+
+<h5><a href="internal:node/443">Tables</a></h5>
+
+<h5><a href="internal:node/444">Verses and poetry</a></h5>
+
+<h5><a href="internal:node/445">Plain text editing</a></h5>
+
+
+
+
+<h2>Sectioning page</h2>
+
+<!-- Sectioning page -->
+
+The hierarchy for sectioning is the following: &lt;h2&gt; for part (highest section), &lt;h3&gt; for chapters (usually used only for books), &lt;h4&gt; for sections (the most used level, use this for longer articles), &lt;h5&gt; for subsection (rarely used).
+
+Use the following template where "#" is one or more digits (no Roman numerals). The number can be followed by a colon or a single point. 
+
+<pre>
+&lt;h2&gt;Part # Title of Part&lt;/h2&gt;
+&lt;h3&gt;Chapter # Title of the Chapter&lt;/h3&gt;
+&lt;h4&gt;Section # Title of the Section&lt;/h4&gt;
+&lt;h5&gt;Subsection # Title of the Subsection&lt;/h5&gt;
+</pre>
+
+e.g.
+
+<pre>
+&lt;h2&gt;Part 1: The first part&lt;/h2&gt;
+&lt;h3&gt;Chapter 1. Title of the Chapter&lt;/h3&gt;
+&lt;h4&gt;Section 1. Title of the Section&lt;/h4&gt;
+&lt;h5&gt;Subsection 1. Title of the Subsection&lt;/h5&gt;
+</pre>
+
+Parts and Appendices are supported, also. E.g.
+
+<pre>
+&lt;h2&gt;Appendix&lt;/h2&gt;
+&lt;h3&gt;Appendix A: Example&lt;/h3&gt;
+&lt;h3&gt;Appendix B: Example&lt;/h3&gt;
+</pre>
+You need to put a &lt;h2&gt;Appendix&lt;/h2&gt; on a line by itself at the point in which the appendices start, even if there's only one appendix. 
+
+By default, the Appendix has an upper case style numbering. 
+
+You can also use the sectioning format without explicating the Chapter/Section label:
+ 
+<pre>
+&lt;h2&gt;Example part without label&lt;/h2&gt;
+&lt;h3&gt;Example chapter without label&lt;/h3&gt;
+&lt;h4&gt;Example section without label&lt;/h4&gt;
+This will be an unnumbered section. Please note that the line must begin with the &lt;h4&gt; and end with &lt;/h4&gt;.
+&lt;h5&gt;Example subsection without label&lt;/h5&gt;
+</pre>
+
+If you need to put a paragraph separator, which, in the original, can look like * * * or ________________ , use this code:  (3 * with spaces)
+<pre>
+&lt;center&gt; * * * &lt;/center&gt;
+</pre>
+
+If you have to indicate a page-break, use 
+<pre>
+&lt;center&gt; * * * * * &lt;/center&gt;
+</pre>
+
+Please note that the &lt;center&gt; tag is deprecated. You should use it only in this particular case.
+
+
+
+
+
+
+<h4>Common Mistakes</h4>
+
+Often chapters start with some words in upper case. This should be changed. Sometimes publishers use the small capitals characters to begin texts. Small caps are a whole set of characters, with upper and lower case. HTML deals with this by hacking the font dimension. We don't support this typographical misery. Capitalize only the first letter of the first word and put subsequent words in lower case. If it seems like the caps are used for emphasis, use the &lt;em&gt; tag, which is for emphasis.
+
+
+<a href="internal:node/439">Back to the Guidelines</a>
+
+
+<h2>Footnotes</h2>
+
+<!-- Footnotes -->
+
+If your text has footnotes, edit it to adhere to the following standard. Don't link footnotes with the &lt;a&gt; tag, this slows down the editing and is not worth the effort, because the resulting PDF will manage it better. 
+
+In the text, put the number between square brackets [1], [2], [3], and so on. At the very end of the text, add a line by itself with 
+<pre>
+&lt;h3&gt;Footnotes&lt;h3&gt;
+</pre>
+
+and write each note on a line by itself, starting with the appropriate number between square brackets. Generally speaking, a line which starts with a digit inside square brackets is considered a body of a footnote.
+
+If you have a footnote that uses more than one paragraph, insert two consecutive &lt;br /&gt; tags at the point where the new paragraph starts, but don't break the line. 
+
+Example: 
+
+<pre>
+This is the text.[1] And here it continues.[2] Foo bar.[3]
+
+&lt;h3&gt;Footnotes&lt;/h3&gt;
+
+[1] This is the first note 
+
+[2] This is the second note
+
+[3] This footnote has two paragraphs. &lt;br /&gt; &lt;br /&gt; Another paragraph.
+</pre>
+
+<h4>Common mistakes</h4>
+
+Very often the original HTML is spread out over a number of pages. Also very often, the footnotes are spread out too, so you have the first chapter and the notes for this, another page with text and footnotes, and so on. <em>Don't</em> copy and paste. You have to rearrange the footnotes in a unique block at the end of <em>your</em> text, changing the numbering, without restarting from 1 in each chapter. It's a long process, I know, but we are not going to link the document internally with anchor and links, so people must always look at the very end of the page. And don't worry, in the PDF the footnote will be nice and 100% awesome.
+
+Due to a bug in the CMS, a problem occurs when you put the footnotes in a block without separating them with a blank line: the HTML page won't appear (we are talking about more than 100 footnotes without blank lines). The solution is pretty easy (once you know it): separate each footnote with a blank line.
+
+
+<a href="internal:node/439">Back to the Guidelines</a>
+
+
+
+<h2>Lists</h2>
+
+<!-- Lists -->
+
+If your text contains ordered, unordered or description lists, you should add the proper tags. This is often an elegant solution for bibliographies, chronologies, and of course numbered lists. 
+
+The syntax is the following:
+
+Unordered list(&lt;ul&gt;): use the &lt;li&gt; to begin each list item.
+
+<pre>
+&lt;ul&gt; 
+&lt;li&gt;First item&lt;/li&gt; 
+&lt;li&gt;Second item&lt;/li&gt; 
+&lt;/ul&gt;
+</pre>
+
+Ordered list(&lt;ol&gt;): use the &lt;li&gt; to begin each list item.
+
+<pre>
+&lt;ol&gt; 
+&lt;li&gt;First item&lt;/li&gt; 
+&lt;li&gt;Second item&lt;/li&gt; 
+&lt;/ol&gt;
+</pre>
+
+Definition lists are similar to other HTML lists. &lt;dl&gt; begins the definition list, &lt;dt&gt; begins the definition term and &lt;dd&gt; begins the definition description.
+
+<pre>
+&lt;dl&gt; 
+&lt;dt&gt;First term&lt;/dt&gt; &lt;dd&gt;First definition&lt;/dd&gt; 
+&lt;dt&gt;Second term&lt;/dt&gt; &lt;dd&gt;Second definition&lt;/dd&gt; 
+&lt;/dl&gt;
+</pre>
+
+It will result in 
+
+<dl> <dt>First term</dt> <dd>First definition</dd> <dt>Second term</dt> <dd>Second definition</dd> </dl>
+
+<h4>Advanced listing</h4>
+
+There are 5 flavors of ordered lists: they have the same syntax for list items, you just have to add the proper attribute to the opening &lt;ol&gt; tag. 
+
+Vanilla &lt;ol&gt; are numbered.
+
+&lt;ol type="a"&gt; generate a ordered list with lowercase letters 
+
+&lt;ol type="A"&gt; generate a ordered list with uppercase letters 
+
+&lt;ol type="i"&gt; generate a ordered list with lowercase roman numbers 
+
+&lt;ol type="I"&gt; generate a ordered list with uppercase roman numbers 
+
+Examples: 
+<pre>
+&lt;ol type="a"&gt; 
+	&lt;li&gt;first item type&lt;/li&gt;
+	&lt;li&gt;second item&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;ol type="A"&gt; 
+	&lt;li&gt;first item&lt;/li&gt;
+	&lt;li&gt;second item&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;ol type="i"&gt; 
+	&lt;li&gt;first item&lt;/li&gt;
+	&lt;li&gt;second item&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;ol type="I"&gt; 
+	&lt;li&gt;first item&lt;/li&gt;
+	&lt;li&gt;second item&lt;/li&gt;
+&lt;/ol&gt;
+</pre>
+
+It will result in:
+
+<ol type="a"> 
+	<li>first item type</li>
+	<li>second item</li>
+</ol>
+
+<ol type="A"> 
+	<li>first item</li>
+	<li>second item</li>
+</ol>
+
+<ol type="i"> 
+	<li>first item</li>
+	<li>second item</li>
+</ol>
+
+<ol type="I"> 
+	<li>first item</li>
+	<li>second item</li>
+</ol>
+
+You can freely nest them, if you need a more complicated list.
+
+<a href="internal:node/439">Back to the Guidelines</a>
+
+<h2>Tables</h2>
+
+<!--Tables-->
+
+The only tables we can accept are ASCII tables with the &lt;pre&gt; tags.
+
+Example:  
+<pre>
+
+DEPARTMENTS OF SEINE AND SEINE-ET-OISE 
+
+Number of inhabitants in 1889                                3,900,000
+Area in acres                                                1,507,300
+Average number of inhabitants per acre                             2.6
+
+Areas to be cultivated to feed the inhabitants (in acres):
+
+Corn and cereals                                               494,000
+Natural and artificial meadows                                 494,000
+Vegetables and fruit                             from 17,300 to 25,000
+Leaving a balance for houses, roads, 
+parks, forests                                                 494,000
+
+Quantity of annual work necessary to improve and cultivate the above
+surfaces in five-hour work-days:
+
+Cereals (culture and crop)                                  15,000,000
+Meadows, milk, rearing of cattle                            10,000,000
+Market-gardening culture, high-class fruit,                 33,000,000
+Extras                                                      12,000,000
+Total                                                       70,000,000
+
+</pre>
+
+The &lt;pre&gt; tag will preserve the spacing between cells and row.
+
+
+<a href="internal:node/439">Back to the Guidelines</a>
+
+
+
+
+<h2>Verse</h2>
+<!-- Verse -->
+
+Use &lt;blockquote&gt;, packing each stanza in a line by itself, separating each verse with &lt;br /&gt;. If you need more stanzas, separate them with a blank line.
+
+<pre>
+&lt;blockquote&gt; 
+Silvia, rimembri ancora &lt;br /&gt; quel tempo della tua vita mortale, &lt;br /&gt; quando beltà splendea &lt;br /&gt; negli occhi tuoi &lt;br /&gt; ridenti e fuggitivi, 
+&lt;/blockquote&gt;
+</pre>
+
+If in a footnote, we prefer the compact form with the slash '/'. e.g. 
+<pre>
+[1] Leopardi said &lt;em&gt;La donzelletta / vien dalla campagna / in sul calar del sole / col suo fascio dell'erba / e porta etc. etc. / &lt;/em&gt;
+</pre>
+
+<a href="internal:node/439">Back to the Guidelines</a>
+
+<!-- Plain text editing -->
+<h2>Plain text editing</h2>
+
+Uploading means pasting plain text into the Body field of the form. If you want to keep a copy for yourself, you will need to use a text editor. 
+
+"Plain text" is distinguished from text that has lots of extra stuff attached to it (like in Word, etc.).  Even though you can't see all the programming attached to the words in Word, it's there. Classical example: the bold and italics in a .doc document. That bold is useless to us -- our site requires correct HTML tags, in this case &lt;strong&gt; and &lt;em&gt;.
+
+There are various ways to save documents as "plain text" (.txt files). Windows PCs have a program called Notepad and Macs have a program called textmate, for example. People that use Linux or a flavor of *nix don't need this explanation. Other text-editors are Emacs and Vim, but these require a bit of studying. The choice is up to you. 
+
+Please use <a href="http://en.wikipedia.org/wiki/Utf-8">UTF-8</a> (the standard Unicode) for editing. This will preserve accents and foreign characters. 
+
+http://en.wikipedia.org/wiki/List_of_text_editors
+http://en.wikipedia.org/wiki/Comparison_of_text_editors#Unicode_and_other_character_encodings
+
+<a href="internal:node/439">Back to the Guidelines</a>
+
+
+</body>
+</html>

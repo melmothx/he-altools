@@ -1,0 +1,29 @@
+#!/bin/bash
+
+if [ ! -f $1 ]; then
+    echo "Usage: $0 file.html"
+    echo "I'll get rid and mark the <em> <i> tags"
+    exit 1
+fi
+
+OUTPUT=$1.new.html
+
+sed -e "s|<[iI]>|@@@italics@@@|g" \
+    -e "s|</[iI]>|@@@enditalics@@@|g" \
+    -e "s|<[Ee][Mm]>|@@@italics@@@|g" \
+    -e "s|</[Ee][Mm]>|@@@enditalics@@@|g" \
+    -e "s|<[Ss][Tt][Rr][Oo][Nn][Gg]>|@@@strong@@@|g" \
+    -e "s|</[Ss][Tt][Rr][Oo][Nn][Gg]>|@@@endstrong@@@|g" \
+    -e "s|<[Cc][Ii][Tt][Ee]>|@@@italics@@@|g" \
+    -e "s|</[Cc][Ii][Tt][Ee]>|@@@enditalics@@@|g" \
+    -e "s|<[Bb][Ll][Oo][Cc][Kk][Qq][Uu][Oo][Tt][Ee]>|<p>@@@blockquote@@@</p>|g" \
+    -e "s|</[Bb][Ll][Oo][Cc][Kk][Qq][Uu][Oo][Tt][Ee]>|<p>@@@endblockquote@@@</p>|g" \
+    -e "s|<[hH]\([0-9]\)>|<p>@@@header\1@@@|g" \
+    -e "s|</[hH]\([0-9]\)>|@@@endheader\1@@@</p>|g" \
+    -e "s|<[uU]>|@@@italics@@@|g" \
+    -e "s|</[uU]>|@@@enditalics@@@|g" \
+    -e "s|<[Bb]>|@@@strong@@@|g" \
+    -e "s|</[Bb]>|@@@endstrong@@@|g" $1 > $OUTPUT
+
+firefox $OUTPUT
+exit 0

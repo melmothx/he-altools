@@ -1,0 +1,262 @@
+== The PDF-maintainer's job on theanarchistlibrary.org ==
+
+The archive of the texts stored in the Drupal site are maintained in a
+local archive too, because they need to be processed to produce the
+pdfs. 
+
+So, if you want to do occasional works, some uploads, some
+copy-editing, you probably don't need this guide, which is for, let's
+call them so, the "PDF-maintainers". They have to merge the changes
+made on Drupal with the local archive. 
+
+A typical archive looks so:
+
+ Author_1__Title.xml 
+ Author_2__Title.xml 
+ Author_3__Title.xml 
+
+where each .xml is a file containing the text pasted in the Drupal
+form, with a short header with author, title, date, notes, that have
+to be manually cut and pasted in the right field. HTML tags are in the
+header are permitted (but Drupal won't accept a title with tags).
+
+The files are processed with the command:
+
+ drupal2latex Author_1__Title.xml  
+
+This will create 2 subdirectories named pdf_archive and LaTex_archive,
+containing the pdfs and the .tex sources. They are not tracked with
+the revision control, because it doesn't make any point.
+
+I prefer to keep these directories in another place, so I do.
+
+ export TEXDIRECTORY=$HOME/projects/library/LaTeX_archive
+ export PDFDIRECTORY=$HOME/projects/library/pdf_archive
+ 
+ for i in *.xml ; do drupal2latex $i || break ; done
+
+The above commands will rebuild the whole collection and put the pdfs
+in another directory (note: if not existing, the directories will be
+created).
+
+Once the job is done (it will take 10 minutes or so), you can put the
+pdfs in the remote directory.
+
+ cd $PDFDIRECTORY
+ scp *_letter.pdf melmoth@theanarchistlibrary:/home/melmoth/library/pdfs/letter
+ scp *_a4.pdf melmoth@theanarchistlibrary:/home/melmoth/library/pdfs/a4
+
+(a wrapper for this is provided in the newer versions of ALtools).
+
+The PDF field on the form will point to that directory, so you're done. 
+
+If you need to refresh some pdfs, just run these commands against a
+single pdf.
+
+This was the full story. The Makefile does these operations in a smart
+and cleanest way. Just edit it, put in the archive directory and type 
+ 
+ make
+
+This will build the collection and print the links for the pdfs. If
+only a file has been added or modified, make will build only that one.
+
+== Using Git for revision control ==
+
+Currently, there's only one pdf-maintainer, but probably we need more. 
+
+=== Individual job ===
+
+The maintainer checks the site for new uploads, click on edit, copy
+and paste the text from the form in a new, add the headers, run
+drupal2latex, upload the pdfs, as above, link them in the library
+page.
+
+As you can imagine, the situation can degenerate quickly. Wrong cut
+and paste, typos to amend, and so on. The duty to keep the pdf
+up-to-date is his/hers. 
+
+Here our heroes need a revision control, to prevent a general mess and
+data-loss. My choice is for Git. It's fast, written by Torvalds and
+used by well-know open-source projects, first and foremost the Linux
+kernel.
+
+My typical session looks so:
+
+ cd $HOME/projects/library
+
+I check if is something is pending
+
+ git status 
+
+Edit or create new files:
+
+ touch New_Author__New_title.xml
+ gvim New_Author__New_title.xml
+ make
+ 
+Once I'm done, I check the status again
+
+Example:
+
+<pre> 
+$ git status
+# On branch master
+# Untracked files:
+#   (use "git add <file>..." to include in what will be committed)
+#
+#       New_Author__New_title.xml
+nothing added to commit but untracked files present (use "git add" to track)
+</pre>
+
+So, I do: 
+
+ git add New_Author__New_title.xml
+ git commit  
+
+An editor will show up, and I can write a short log.
+Check again:
+<pre>
+ $ git status
+# On branch master
+nothing to commit (working directory clean)
+</pre>
+
+Real example (the mail is fake)
+
+<pre>
+$ git log
+commit b3b4b24fffa3290cbb2487f5db8dc4651c603b70
+Author: Marco <melmoth@universe.cosmo.net>
+Date:   Wed Mar 25 23:21:12 2009 +0100
+
+    fixed a ocr typo
+
+commit 747d3eae8b8b245c670f397a2c99a7b1878615bd
+Author: Marco <melmoth@universe.cosmo.net>
+Date:   Wed Mar 25 23:13:08 2009 +0100
+
+    fixed typos
+
+</pre>
+
+Done. There's a graphical interface too. Use 
+
+ $ gitk
+
+And you will browse the whole history of the archive, seeing diffs and
+so on.
+
+===Collaborative editing===
+
+Do you want to help maintaining the pdf and the archive? First and
+foremost, we have to trust you. No trust, no party. Next, you must
+have a Linux box running and some will to learn new skills. 
+
+So, let's say we trust you, because you did a lot, uploaded tons of
+stuff, because someone of us know you face to face. Ask for a shell on
+the server. You have to be in the library group to commit changes. 
+
+I suggest you to use the ssh-agent to avoid a lot of password typing.
+E.g. http://mah.everybody.org/docs/ssh
+http://www.thegeekstuff.com/2008/06/perform-ssh-and-scp-without-entering-password-on-openssh/
+
+Each git repository contains the *whole* history of the archive, and
+it's stored locally, so you can work off-line painless. 
+
+First and foremost, fetch a copy of the archive (change 6666 with the
+actual port used for ssh): 
+
+ git clone ssh://your_user@theanarchistlibrary.org:6666/home/melmoth/git/alibrary.git
+
+This will clone my archive, which is currently the only one, creating
+a directory:
+
+Initialized empty Git repository in /tmp/exp/alibrary/.git/
+remote: Counting objects: 539, done.
+remote: Compressing objects:  55% (183/332)Receiving objects:  21% (117/539), 140.remote: Compressing objects: 100% (332/332), done.
+remote: Total 539 (delta 205), reused 539 (delta 205)
+Receiving objects: 100% (539/539), 7.48 MiB | 444 KiB/s, done.
+Resolving deltas: 100% (205/205), done.
+
+ cd alibrary 
+ ls 
+ git status
+ git log
+
+You'll will see the directory fully populated with all the stuff. 
+You can start working on it (see previous chapter, Individual job). 
+
+Suggestion, before you start committing:
+
+ git config --global user.name "Your Name Comes Here"
+ git config --global user.email you@yourdomain.example.com
+
+ [editing]
+ git add foo.xml
+ git commit -a
+
+When your done, you will want to share your changes. First merge the
+changes, if any.
+ 
+ git pull
+
+Upload your changes.
+
+ git push 
+
+
+You're done.
+
+Other maintainers will fetch your changes pulling from the remote
+repository, and pushing their changes, syncing the archives.
+
+==Work on the server==
+
+Log in the server with ssh
+
+ ssh theanarchistlibrary.org
+
+Change directory where the archive is located. It's a *clone* of the
+bare alibrary.git, used as swapping archive, where maintainers can
+push the stuff.
+
+ cd ~/building/alibrary
+ git pull 
+ make
+ exit
+
+You're done. 
+
+Long story. On the server there are 2 git archives. The first is the
+bare archive and is located in /home/melmoth/git/alibrary.git It only
+contains the git files, is a setgid directory for the library group.
+Here maintainers can clone, pull and push from their local archives.
+If you clone from here, a bare "git push" without arguments will push
+your changes here without problems. 
+
+The other one is meant to be "personal", i.e. nobody should push here,
+because it's a real working directory, with actual files. So the
+proper way to keep it up-to-date is to create it with a 
+ 
+ cd ~
+ mkdir building
+ cd building
+ git clone /home/melmoth/git/alibrary.git   ## the master repo wher people push
+ cd alibrary
+  
+Copy and edit the Makefile in it and run make
+
+ make
+
+This will build the whole collection.
+
+Next work in local, pushing to the origin
+(/home/melmoth/git/alibrary.git) Back to the server:
+
+ cd building/alibrary
+ git pull
+ make
+
+And you're done
+

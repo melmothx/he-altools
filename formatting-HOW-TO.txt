@@ -1,0 +1,93 @@
+Most of the PDFs hosted at theanarchistlibrary.org are ready to be printed. However, you could need to reformat them to suite your own needs. I'll explain you what and how to do it. I assume that you use a flavor of GNU/Linux or a *NIX. No, Windows is not supported, even if something here could be still useful.
+
+There's a <a href="internal:node/446">script</a> that do all the steps here descripted. Just run 
+<pre>
+reformat-pdf.sh  Micheal_Velli__Manual_for_Revolutionary_Leaders_letter.pdf
+</pre>
+for a "guided tour". 
+All the programs needed should be available in a complete texlive installation, which also ship the pstools. (see http://www.tug.org/texlive )
+
+The syntax is: 
+<pre>
+reformat-pdf.sh target [ a4 | letter ] [-s <number> ]  [ "format options" ]
+</pre>
+
+<ul>
+<li><em>target</em> is the original pdf, which don't have necessarily to be on your disk. </li>
+
+<li> <em> [ a4 | letter ] (read <em> a4 <strong> or </strong> letter </em>): specify the output format. "a4" or "letter"</li>
+
+<li> The -s option selects the size of signature which will be used. The signature size is the number of sides which will be folded and bound together; the num‐ ber  given  should be a multiple of four. The default is to use one signature for the whole file. Extra blank sides will be added if the file does not contain a multiple of four pages. (from the <em>psbook</em> manual</li>
+
+<li><em>format options</em>, where you can specify a number of parameters in the form margin=value. The value are floats or integers with <em>in</em> (inches) or <em>cm</em> (centimeters), separating them with a comma (please don't insert spaces). The available margins you can set are: top, bottom, inner, outer. If you want a finer control, you should study LaTeX a bit and edit the .tex directly. Please close the string between quotes</li>
+</li>
+
+Example: 
+<pre>
+reformat-pdf.sh  Micheal_Velli__Manual_for_Revolutionary_Leaders_letter.pdf \
+    letter -s 4 "top=0.5in,bottom=0.6in,inner=0.5in,outer=0.5in"
+</pre>
+
+This will reformat the given pdf to a letter, imposed with blocks of 4 pages (you'll have to fold each sheet separately), with the given margins.
+
+Here you can find the whole story.
+
+First, find your target. Say you want to reformat http://theanarchistlibrary.org/sites/default/files/pdfs/letter/Micheal_Velli__Manual_for_Revolutionary_Leaders_letter.pdf
+
+To properly reformat them, you should retrieve the LaTeX source, which are located at http://theanarchistlibrary.org/sites/default/files/src/ (sorry, no directory listing available). Append to this url the name of the pdf, changing extension from .pdf to .tex.
+
+<pre>
+wget http://www.theanarchistlibrary.org/sites/default/files/src/Micheal_Velli__Manual_for_Revolutionary_Leaders{_letter.tex,_a4.tex,_a4_imposed.tex,_letter_imposed.tex} 
+</pre>
+
+If you know LaTeX, just grab one of the sources and edit it! If not, read on. 
+
+When the text is too long or too short, the Library doesn't ship an imposed one, but you can create it. 
+
+So, grab a standard _letter.tex source, open it with an editor and modify it (I'll provide you a script to automated this process).
+
+<ol>
+<li>change the first line, replacing letterpaper or a4paper with "a5paper"</li>
+
+<li>set the geometry. There should be a placeholder, "%%%%%geometry%%%%%"</li>
+</ol>
+
+Add there: 
+<pre>
+\usepackage[a5paper,includeheadfoot,top=0.5in,bottom=0.6in,inner=0.5in,outer=0.5in]{geometry}
+</pre>
+
+As you see, you can set the top, bottom, inner and outer margin to whatever you want. 
+You can freely use inches (in) or centimeters (cm). 
+
+Delete the line with the includegraphics for the logo to avoid problems. (You're building your own pdf, right?)
+
+Now, compile it (twice)
+
+<pre>
+pdflatex file.tex
+pdflatex file.tex
+</pre>
+
+Now you have a file .pdf. You have to produce an imposed pdf: This will be enough:
+
+<pre>
+pdftops -level3sep  $TEXBASENAME.pdf - | \
+	psbook -q | \
+	psnup -q -2 -Pa5 -pa4  > file.ps
+
+ps2pdf -dPDFSETTINGS=/printer \
+	-dUseCIEColor=true \
+	-dPDFA \
+	-sPAPERSIZE=a4 file.ps
+</pre>
+
+Done.
+
+
+
+
+
+
+
+

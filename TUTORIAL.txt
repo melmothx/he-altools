@@ -1,0 +1,141 @@
+This directory contains the following files and programs:
+
+ -rwxr-xr-x  al2tex.pl 
+
+It's a script in perl. It takes as argument a properly formatted xml
+file and create a LaTeX file, ready to be compiled. 
+
+ -rwxr-xr-x  drupal2latex 
+
+This script is meant to be used normally to produce pdfs. It uses
+al2tex.pl as backend, compile the .tex and using ghostscript impose
+the pdfs, if the number of the letter formatted pdf is between 4 and
+60 (ie, skip the very short and the very long ones).
+
+ -rwxr-xr-x  htmlpp 
+
+It's a very rough script that takes as argument a HTML page. It
+filters the html tags, to preserve it for the processing (see below).
+
+ -rwxr-xr-x  preparing_for_the_upload.sh 
+
+This script takes as argument xml file. It cleans the symbol produced
+by htmlpp (if any) and build the headers of the xml files.
+
+ -rwxr-xr-x  uploadthepdfs 
+
+It's a deprecated wrapper to upload the pdfs to the server. Don't use
+it and build them on the server, if you're a "pdf-maintainer" 
+If you use it, you have to modify the user and port values.
+
+ -rw-r--r--  Makefile
+
+It contains just a few lines of code, and you need to setup it
+correctly (setting the destination of the .tex and .pdf). If you're
+familiar with "make", you should know it uses the timestamp. 
+Used to build the pdfs without getting crazy, as make detects if a
+file changed and need a rebuilding.
+
+ -rwxr-xr-x  tagadelic.sh
+
+A filter to build the tag list on drupal. Nothing special.
+
+ -rwxr-xr-x  wiki-author-parser.sh
+
+A filter that process the wiki table with the uploads and create a
+the Index page. 
+
+
+
+** INSTALLATION **
+
+Move the files in a directory in your $PATH (check with the command:
+echo $PATH), e.g. (if ~/bin is in your $PATH)
+
+ mv *.sh htmlpp drupal2latex al2tex.pl uploadthepdfs ~/bin 
+
+However, if you downloaded the stuff from the git, I suggest you to
+link them in the $PATH directory, to stay up-to-date with the exciting
+news.
+
+** USAGE **
+
+Download the source html page, e.g.
+
+ wget http://www.primitivism.com/abolition.htm
+
+Next, run htmlpp against it:
+
+ htmlpp abolition.htm 
+
+This will create a new html file, abolition.htm.new, and will open it
+with firefox. As you will notice, it will look strange, because has
+the bold and italics text markerd with @@@italics@@@ and so on. Don't
+worry, it will be fine.
+
+Copy and paste from the weird page in an empty file. I suggest you to
+call it Name_Surname__The_title.xml,
+e.g. Bob_Black__The_Abolition_of_Work.xml (please note the 2
+underscores between name and title). Save and close it.
+
+Now run the preparing_for_the_upload.sh against it:
+
+ preparing_for_the_upload.sh Name_Surname__The_title.xml
+
+The script will ask some questions and build the header. 
+
+The text should be ready for the upload, but you still need to fix
+notes, chapter, typos and so on. However, does a nice job, fixing
+annoying things like quote, preserving the italics and similar and
+adding the header.
+
+If you want to convert it to .pdf, use the drupal2latex script against
+the .xml file. You'll need the ucs package (latex-ucs on debian),
+lmodern, enumerate and href packages. Please note that these packages
+are bundled with TeXlive. (On recent debian, apt-get install
+texlive-full, and you're done, even if is a +1G installation). 
+
+This is a template of the header.
+Please don't break the lines.
+
+<!-- AUTHOR="The autor" -->
+<!-- TITLE="The Title" -->
+<!-- DATE="Date of the original publication" -->
+<!-- TOPICS="Various topics, etc." -->
+<!-- ADC="the adc signature" -->
+<!-- SOURCE="Retrieved on February 15th, 2009 from http://www.anarchistnews.org/?q=node/6451" -->
+<!-- NOTES="Some notes" --> 
+
+If something fails, please report the problem. 
+
+* Makefile
+
+If you want to manage the archive, you'll find the Makefile very
+useful.Please edit the TEXDIRECTORY and PDFDIRECTORY variables to
+suite your needs, put it in the alibrary directory and run make. This
+will keep the archive up-to-date, rebuilding the pdfs that need a
+refresh. The archive on the server is managed with it.
+
+* Index 
+
+copy and paste
+http://wiki.theanarchistlibrary.org/index.php?title=Uploads_sorted_by_Authors&action=edit
+in a new file and run 
+
+ wiki-author-parser.sh file.wiki
+
+It will produce two files: authors.html and text-index.html.
+Paste their content in http://beta.theanarchistlibrary.org/author
+and http://beta.theanarchistlibrary.org/texts-sorted-title
+
+For the Topic index you have to copy and paste the source of
+http://beta.theanarchistlibrary.org/admin/content/taxonomy/1 and
+following pages in an empty file (use control-u in firefox)
+and run 
+
+ tagadelic.sh tags.list 
+
+This will produce tags.html, which you can put in
+http://beta.theanarchistlibrary.org/topics
+
+

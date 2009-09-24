@@ -1,0 +1,323 @@
+#!/usr/bin/perl -w
+# Public domain. Please report errors, patches, suggestions to 
+# marco at angrynerds.com
+# Some tests and initial variables
+#
+
+$filename = $ARGV[0] || die "Please pass a file.xml as argument\n\n";
+-e $filename || die "$filename does not exists\n\n";
+-T $filename || die "$filename doesn't look as a text file, exiting\n\n";
+$outputfile = $filename ; 
+$outputfile =~ s/\.xml/.html/ ;
+print "Processing $filename, I'll output on $outputfile\n";
+
+# print "output in $TEXDIRECTORY and $PDFDIRECTORY\n";
+## read the file and put it in 3 array: @header, @body, @fnotes
+open(IN, "< $filename")  || die "I cannot open $filename, why?\n\n";
+
+# read the file.
+$fn_counter = 1; 
+$body_fn_counter = 1;
+while ($r = <IN>) {
+	if ($r =~ m/^\s*<!--.*-->\s*$/) {
+		push @header, $r;
+		# the headers are put in a separate array
+	}
+	elsif ($r =~ m/^\s*\[\d+\]\s*/) {
+		$r =~ s/^\s*(\[\d+\])/<a name="fn$fn_counter"><\/a>$1<a href="#fn_back$fn_counter">^<\/a>/;
+		# debug
+		# print $r; 
+		push @fnotes, $r;
+		$fn_counter++;
+		# the footnotes at the end go in a separate array, with the <a ready>
+	}
+	# the rest go in the body
+	else {
+		while ( $r =~ m/\[\d{1,3}]/ ) {
+		$r =~ s/\[\d{1,3}]/Fo_oT_NoTe$body_fn_counter Fo_oT_NoTe/ ;
+		$body_fn_counter++  ;
+		# debug 
+		# print $body_fn_counter ;
+		}
+		push @orig_body, $r; 
+	}
+}
+close(IN);	
+
+$toc_counter = 1;
+while (@orig_body) {
+	$r = shift @orig_body ;
+	$r =~ s/Fo_oT_NoTe(\d{1,3}) *Fo_oT_NoTe/<a href="#fn$1">[$1]<\/a><a name="fn_back$1"><\/a>/g ;
+	$r =~ s/(<h\d>)(.*)(<\/h\d>)/$1<a name="toc$toc_counter">$2<\/a>$3/ ;
+	if ($r =~ m/name="toc/) {
+		$toc_entry = $r ;
+		$toc_entry =~ s/name="/href="#/ ;
+		$toc_counter++  ;
+		#debug 
+		# print $toc_entry;
+		push @toc, $toc_entry ;
+	}
+	push @body, $r 
+}
+$AUTHOR="";
+$TITLE="";
+$DATE="";
+$TOPICS="";
+$ADC="";
+$SOURCE="";
+$NOTES="";
+# process the header and extract the fields
+# still not used, but will be soon
+@header || die "No header!\n";
+foreach $field_header (@header) {
+	if ($field_header =~ m/<!--\s*AUTHOR="(.+)"\s*-->/) { 
+		$AUTHOR=$1;
+	}
+	elsif ($field_header =~ m/<!--\s*TITLE="(.+)"\s*-->/) { 
+		$TITLE=$1;
+	}
+	elsif ($field_header =~ m/<!--\s*DATE="(.+)"\s*-->/) { 
+		$DATE=$1;
+	}
+	elsif ($field_header =~ m/<!--\s*TOPICS="(.+)"\s*-->/) { 
+		$TOPICS=$1;
+	}
+	elsif ($field_header =~ m/<!--\s*ADC="(.+)"\s*-->/) { 
+		$ADC=$1;
+	}
+	elsif ($field_header =~ m/<!--\s*SOURCE="(.+)"\s*-->/) { 
+		$SOURCE=$1;
+	}
+	elsif ($field_header =~ m/<!--\s*NOTES="(.+)"\s*-->/) { 
+		$NOTES=$1;
+	}
+}
+
+# 
+##############################
+# temporary
+# while (@header) {
+# 	$r = shift @header;
+# 	print "$r";
+# }
+# ###############################
+
+# write the body file
+
+$html_header =<<EOL;
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>$TITLE by $AUTHOR</title>
+</head>
+<body>
+<div id="preamble">
+<p><strong>Author: </strong>$AUTHOR</p>
+<p><strong>Title: </strong>$TITLE</p>
+<p><strong>Source: </strong>$SOURCE</p>
+<p><strong>Date: </strong>$DATE</p>
+<p><strong>Topics: </strong>$TOPICS</p>
+<p><strong>ADC: </strong>$ADC</p>
+
+EOL
+
+    $html_close =<<EOL;
+
+<p><strong>Notes: </strong>$NOTES</p>
+</body>
+</html>
+EOL
+
+
+# try to format the toc 
+# The parser has to know which is the parent level, so find the higher
+@toc_tmp = @toc ; 
+foreach $level (@toc_tmp) {
+	$level =~ s/<h(\d)>.*<\/h.>/$1/ ; 
+	push @levs, $level;
+}
+
+@levs = sort(@levs); 
+
+$oldlevel = $levs[0];
+# print "Max level is $oldlevel"; 
+## found!
+#
+
+push @toc_formatted, "<div id=\"table_of_contents\">";
+$lp_counter = 0;  # probably it's an hack, but we're used to
+while (@toc) {
+	$r = shift @toc; 
+	$current_level = $r ;
+	$current_level =~ s/<h(\d)>.*<\/h.>/$1/ ; 
+	# replace the <h> with <li>
+	$r =~ s/<h\d>/<li>/ ;
+	$r =~ s/<\/h\d>/<\/li>/ ;
+	# first loop, open!
+	while ($lp_counter == 0) {
+		push @toc_formatted, "<ul>\n" ;
+		$lp_counter++;
+
+	}
+	if ($current_level > $oldlevel) {
+		push @toc_formatted, "<ul>\n" ;  
+		$level_shift = $current_level - $oldlevel;
+		while ($level_shift > 1) {
+			push @toc_formatted, "<ul>\n";
+			$level_shift--;
+		}
+
+	} 
+	elsif ($current_level < $oldlevel) {
+		push @toc_formatted, "</ul>\n";
+		$level_shift =  $oldlevel - $current_level;
+		while ($level_shift > 1) {
+			push @toc_formatted, "</ul>\n";
+			$level_shift--;
+		}
+	}
+	# insert the <li>
+	push @toc_formatted, $r ; 
+	$oldlevel = $current_level; 
+}
+
+push @toc_formatted, "</ul>\n\n<br />\n</div>\n";
+
+
+$in_verbatim = 0 ;
+$in_li = 0 ;
+$in_dd = 0 ;
+$in_blockquote = 0 ;
+while (@body) {
+	$r = shift @body;
+	if ( $r =~ m/<pre>/ ) {
+		$in_verbatim = 1 ;
+		push @bodytmp, $r; 
+	}
+	elsif ( $r =~ m/<\/pre>/ ) {
+		$in_verbatim = 0 ;
+		push @bodytmp, $r; 
+	}
+	elsif ( $in_verbatim == 1 ) {
+		push @bodytmp, $r; 
+	}
+	elsif (( $r =~ m/<li>/) && ($in_li == 0)) {
+		# if closed, good
+		if ($r =~ m/<\/li>/) {
+			push @bodytmp, $r;
+		}
+		elsif ($r =~ m/<li>\s*\w+/) {
+			$r = $r . "<br/>" ;
+			push @bodytmp, $r;
+		} else {
+			$in_li = 1;
+		        push @bodytmp, $r;
+		}
+	}
+	elsif ($in_li == 1) {
+		if ($r !~ m/<\/li>/) {
+			# still open
+		    if ($r =~ m/\w/) {
+			$r = $r . "<br />";
+		    }
+		        push @bodytmp, $r;
+		} else {
+			push @bodytmp, $r;
+			$in_li = 0;
+		}
+	}
+	elsif (( $r =~ m/<dd>/) && ($in_dd == 0)) {
+		# if closed, good
+		if ($r =~ m/<\/dd>/) {
+			push @bodytmp, $r;
+		}
+		elsif ($r =~ m/<dd>\s*\w+/) {
+			$r = $r . "<br/>" ;
+			push @bodytmp, $r;
+		} else {
+		    $in_dd = 1;
+		        push @bodytmp, $r;
+		}
+	}
+	elsif ($in_dd == 1) {
+		if ($r !~ m/<\/dd>/) {
+			# still open
+		    if ($r =~ m/\w/) {
+			$r = $r . "<br />";
+		    }
+		        push @bodytmp, $r;
+		} else {
+			push @bodytmp, $r;
+			$in_dd = 0;
+		}
+	}
+	elsif (( $r =~ m/<blockquote>/) && ($in_blockquote == 0)) {
+		# if closed, good
+		if ($r =~ m/<\/blockquote>/) {
+			push @bodytmp, $r;
+		}
+		elsif ($r =~ m/<blockquote>\s*\w+/) {
+			$r = $r . "<br/>" ;
+			push @bodytmp, $r;
+		} else {
+		    $in_blockquote = 1;
+		        push @bodytmp, $r;
+		}
+	}
+	elsif ($in_blockquote == 1) {
+		if ($r !~ m/<\/blockquote>/) {
+			# still open
+		    if ($r =~ m/\w/) {
+			$r = $r . "<br />";
+		    }
+		        push @bodytmp, $r;
+		} else {
+			push @bodytmp, $r;
+			$in_blockquote = 0;
+		}
+	}
+	elsif ($r =~ m/^\s*<h[0-9]>.*<\/h[0-9]>\s*/) { 
+		push @bodytmp, $r; 
+	}
+	elsif ($r =~ m/^\s*$/) {
+		push @bodytmp, $r; 
+	}
+	elsif ($r !~ m/<\/?(ul|dd|li|ol|dl|dt|pre|center|blockquote|h[1-5])/ ) {
+		push @bodytmp, "<p>$r</p>\n"; 
+	}
+	else 
+	{
+		print $r ;
+		push @bodytmp, $r; 
+	}
+	
+}
+
+@body && die "WTF is going on?\n";
+if ( $in_blockquote || $in_li || $in_dd || $in_verbatim ) {
+	die "SOMETHING IS BADLY BROKEN"
+}
+push @body, $html_header;
+while (@toc_formatted) {
+	$r = shift @toc_formatted ;
+	push @body, $r; 
+}
+while (@bodytmp) {
+	$r = shift @bodytmp ;
+	push @body, $r ; 
+}
+while (@fnotes) {
+	$r = shift @fnotes ;
+	if ($r !~ m/^\s*$/) 
+	{ push @body, "<p>$r</p>\n" ; }
+}
+
+push @body, $html_close;	
+
+
+open(DEST, "> $outputfile") || die "I cannot open $outputfile, why?\n\n";
+print DEST @body ;
+close(DEST);
+
