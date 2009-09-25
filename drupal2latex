@@ -4,11 +4,7 @@
 ## public domain
 ## The changelog is in the git. If interested, ask.
 ## 
-if [ "$2" = "xelatex" ]; then
-	TEXBACKEND=xelatex
-else
-	TEXBACKEND=pdflatex
-fi
+TEXBACKEND=xelatex
 ## some variables
 DESTFILE=$(basename $1 .xml).tex
 CWD=$(pwd)
@@ -68,30 +64,19 @@ move_the_stuff () {
 	mv $TEXBASENAME.log $LOGDIRECTORY/${TEXBASENAME}_$1.log
 }
 
+# process
+al2tex.pl $1 
 
-if [ "$TEXBACKEND" = "xelatex" ]; then
-	al2tex.pl $1 xelatex
-	# leona said fonts are too small
-	sed -i "1s/10pt/12pt/" $DESTFILE  
-else
-	al2tex.pl $1 
-fi
 
 echo "TeXing..."
 
 ( $TEXBACKEND -halt-on-error $DESTFILE > /dev/null )
 
 if [ "$?" != "0" ]; then
-	if [ "$TEXBACKEND" = "pdflatex" ]; then
-   		echo "Compilation failed, retrying with XeLaTeX"
-		clean_the_mess
-   		exec $0 $1 xelatex
-	else
-		echo "No way, exiting... So sorry"
-  	 	tail -30 $TEXBASENAME.log
- 	  	echo "See $TEXBASENAME.log for more infos"
- 	  	exit 3
-	fi
+    echo "No way, exiting... So sorry"
+    tail -30 $TEXBASENAME.log
+    echo "See $TEXBASENAME.log for more infos"
+    exit 3
 fi
 
 # compile the a4 
