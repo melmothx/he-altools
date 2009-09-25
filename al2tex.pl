@@ -247,8 +247,6 @@ while (@bodynotes) {
 		push @dest, $clean_line;
 		next ;
 	}
-	$clean_line = &check_the_sections($clean_line);
-	# print "$clean_line"; # debug
 	# here we insert the links verbatim
 	$clean_line = &check_urls($clean_line);
 	while ( $clean_line =~ m/BeGiNURLHREF([^\s]*?)EndURLHREF/)  {
@@ -268,45 +266,13 @@ while (@bodynotes) {
 		$clean_line =~ s/HERETHERESAFUCKINGURL/\\url{$the_url_token}/;
 	}
 	shift @tmp_array_url && die "Something wrong with the url processing" ;
-# 	while ($clean_line =~ m/BeGiNURLHREF[^\s]*\\_[^\s]*EndURLHREF/) {
-# 		$clean_line =~ s/(BeGiNURLHREF[^\s]*?)\\_/$1_/ ;
-# 		# print "$clean_line\n"; #debug
-# 	}
-# #	while ($clean_line =~ m/BeGiNURLHREF[^\s]*\\#[^\s]*EndURLHREF/) {
-# #		$clean_line =~ s/(BeGiNURLHREF[^\s]*?)\\#/$1#/ ;
-# #		# print "$clean_line\n"; #debug
-# #	}
-# 	while ($clean_line =~ m/BeGiNURLHREF[^\s]*\\~{}[^\s]*EndURLHREF/) {
-# 		$clean_line =~ s/(BeGiNURLHREF[^\s]*?)\\~{}/$1~/ ;
-# 		# print "$clean_line\n"; #debug
-# 	}
-# 	$clean_line = &restore_urls($clean_line);
-	# print "$clean_line"; #debug
+
 	if ($clean_line =~ m/^\s*\\part/) {
 		if ($numchapone > 1) { 
 			$clean_line =~ s/^\\part.*$/$&\n\\setcounter{chapter}{0}\n\n/ ;
 		}
 	}
-	## all this below is *obsolete* and will removed soon
-	if ($clean_line =~ m/$begin_sep.*$end_sep/) {
-		$clean_line = &build_the_sections($clean_line);
-		if ($numchapone >= 1 && $clean_line =~ m/[Aa]ppendix/){
-			if ($numappendix == 1 ) {
-				$clean_line =~ s/^\s*$begin_sep\s*Appendix\s*[\:\.]?\s*(.*?)\s*$end_sep/\\appendix\n\n\\chapter{$1}/ 
-			} else  {
-				$clean_line =~ s/^\s*$begin_sep\s*Appendix\s*$end_sep\s*$/\\appendix\n/;
-				$clean_line =~ s/^\s*$begin_sep\s*Appendix\s+[0-9A-Z]+[\:\.]?\s*(.*?)\s*$end_sep/\\chapter{$1}/;
-			}
-		}
-		if ($clean_line =~ m/[Pp]art/ ) {
-			if ($numchapone > 1) {
-				$clean_line =~ s/^\s*$begin_sep\s*[Pp]art\s*[0-9IVXLC]+[\.\:]?\s*(.*?)\s*$end_sep\s*$/\\part{$1}\n\\setcounter{chapter}{0}\n\n/
-			} else {
-				$clean_line =~ s/^\s*$begin_sep\s*[Pp]art\s*[0-9IVXLC]+[\.\:]?\s*(.*?)\s*$end_sep\s*$/\\part{$1}\n/
-			}
-		}
-		$clean_line =~ s/^\s*$begin_sep\s*(.*?)\s*$end_sep\s*$/\\section*{%\n\\phantomsection%\n\\addcontentsline{toc}{section}{\\protect\\numberline{}$1}%\n$1}\n\n/;
-	}
+
 	push @dest, $clean_line;
 }
 
@@ -340,26 +306,7 @@ sub check_urls {
 	return $line
 }
 
-# sub restore_urls {
-# 	my $line=shift ;
-# 	$line =~ s/BeGiNURLHREF([^\s]+?)EndURLHREF/\\url{$1}/g;
-# 	return $line
-# }
 
-sub check_the_sections {
-	my $line=shift ;
-	$line =~ s/^\s*<strong>\s*(.+?)\s*<\/strong>\s*$/BeginSectionOrChapter $1 EndSectioOrChapter\n/;
-	return $line 
-}
-
-sub build_the_sections {
-	my $line=shift ;
-	$line =~ s/\s*$begin_sep\s*[Cc]hapter\s*([0-9IVXLC]+[\:\.]?\s*)?(.*?)\s*$end_sep/\\chapter{$2}/ ;
-	$line =~ s/\s*$begin_sep\s*[Ss]ection\s*([0-9IVXLC]+[\:\.]?\s*)?(.*?)\s*$end_sep/\\section{$2}/;
-	$line =~ s/\s*$begin_sep\s*[Ss]ubsection\s*([0-9IVXLC]+[\:\.]?\s*)?(.*?)\s*$end_sep/\\subsection{$2}/;
-	return $line ;
-}
-	
 
 sub clean_the_html {
 	my $line=shift ;
