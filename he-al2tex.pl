@@ -302,6 +302,7 @@ sub clean_the_html {
 	$line =~ s/<p>/\n/g;
 	$line =~ s/<\/p>/\n/g;
 	$line =~ s/\\/BACKSLASHBACKSLASH/g;
+	# try to fix the rtl
 	$line =~ s/#/\\#/g ;
 	$line =~ s/\$/\\\$/g ;
 	$line =~ s/%/\\%/g ;
@@ -321,27 +322,27 @@ sub clean_the_html {
 	# $line =~ s/”’/''\\thinspace{}'/g ;
 	# $line =~ s/”'/''\\thinspace{}'/g ;
 	# duble close
-	$line =~ s/(’|')("|”)/'\\thinspace ''/g ;
-	$line =~ s/("|”)(’|')/''\\thinspace '/g ;
+	$line =~ s/(’|')("|”)/’\\thinspace ”/g ;
+	$line =~ s/("|”)(’|')/”\\thinspace ’/g ;
 	# duble open
-	$line =~ s/("|“)(`|‘)/``\\thinspace `/g ;
-	$line =~ s/(`|‘)("|“)/`\\thinspace ``/g ;
-	$line =~ s/"\b/``/g ;
-	$line =~ s/ "/ ``/g ;
-	$line =~ s/^"/``/ ;
-	$line =~ s/"/''/g ;
-	$line =~ s/ -+ / --- /g ;
-	$line =~ s/“/``/g;
-	$line =~ s/”/''/g;
-	$line =~ s/’/'/g ;
-	$line =~ s/‘/`/g;
+	$line =~ s/("|“)(`|‘)/“\\thinspace ‘/g ;
+	$line =~ s/(`|‘)("|“)/‘\\thinspace “/g ;
+#	$line =~ s/"\b//g ;
+#	$line =~ s/ "/ ``/g ;
+#	$line =~ s/^"/``/ ;
+#	$line =~ s/"/''/g ;
+#	$line =~ s/ -+ / --- /g ;
+#	$line =~ s/“/``/g;
+#	$line =~ s/”/''/g;
+#	$line =~ s/’/'/g ;
+#	$line =~ s/‘/`/g;
 	$line =~ s/(\. *){2,5}/\\ldots{}/g ;
 	$line =~ s/…/\\ldots{}/g;
-	$line =~ s/—/---/g;
-	$line =~ s/–/---/g;
-	$line =~ s/--+/---/g;
-	$line =~ s/(\d)--*(\d)/$1--$2/g;
-	$line =~ s/----+/---/g;
+#	$line =~ s/—/---/g;
+#	$line =~ s/–/---/g;
+#	$line =~ s/--+/---/g;
+#	$line =~ s/(\d)--*(\d)/$1--$2/g;
+#	$line =~ s/----+/---/g;
 	$line =~ s/<em>/\\emph{/g ;
 	$line =~ s/<\/em>/}/g ;
 	$line =~ s/<strong>/\\textbf{/g ;
