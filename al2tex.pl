@@ -107,13 +107,13 @@ while (@body) {
 }
 
 if ( $numchapone >= 1 ) { 
-	$preamble_first_line = "\\documentclass[a4paper,10pt,final,oneside]{book}\n\\pagestyle{plain}\n" ;
+	$preamble_first_line = "\\documentclass[a4paper,12pt,final,oneside]{book}\n\\pagestyle{plain}\n" ;
 	$dottedtoc = "\\renewcommand{\\cftchapleader}{\\bfseries\\cftdotfill{\\cftsecdotsep}}"; 
 } elsif ($isbook >= 1 ) {
-	$preamble_first_line = "\\documentclass[a4paper,10pt,final,oneside]{book}\n\\pagestyle{plain}\n" ;
+	$preamble_first_line = "\\documentclass[a4paper,12pt,final,oneside]{book}\n\\pagestyle{plain}\n" ;
 	$dottedtoc = "\\renewcommand{\\cftchapleader}{\\bfseries\\cftdotfill{\\cftsecdotsep}}" ;
 } else {
-	$preamble_first_line = "\\documentclass[a4paper,10pt,final]{article}\n" ;
+	$preamble_first_line = "\\documentclass[a4paper,12pt,final]{article}\n" ;
 	$dottedtoc = "\\renewcommand{\\cftsecleader}{\\bfseries\\cftdotfill{\\cftdotsep}}" ;
 }
 
@@ -125,14 +125,13 @@ $preamble_fonts = <<"EOF";
 \\setmainfont[Mapping=tex-text]{Linux Libertine O}
 EOF
 
-    $preamble_hyperref = "\\usepackage[bookmarks=true,citecolor=black,filecolor=black,linkcolor=black,urlcolor=black,unicode=false,colorlinks=false,plainpages=false,pdfpagelabels,colorlinks=true,xetex]{hyperref}";
+    $preamble_hyperref = "\\usepackage[bookmarks=true,unicode=false,colorlinks=false,plainpages=false,pdfpagelabels,xetex]{hyperref}";
 
 $preamble = <<"EOF";
 $preamble_fonts 
 \\usepackage{polyglossia}
 \\setdefaultlanguage[numerals=hebrew]{hebrew}
 \\setmainfont{Linux Libertine O}
-
 \\usepackage{url}
 \\usepackage{enumerate}
 \\usepackage{tocloft}
