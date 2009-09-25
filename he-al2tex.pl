@@ -135,7 +135,7 @@ $preamble_fonts
 $dottedtoc
 $LATEXCODE
 \\usepackage{graphicx}
-$preamble_hyperref
+% $preamble_hyperref
 
 %%%%%geometry%%%%%
 
