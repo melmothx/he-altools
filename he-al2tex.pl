@@ -115,11 +115,11 @@ if ( $numchapone >= 1 ) {
 }
 
 $preamble_fonts = <<"EOF";
+\TeXXeTstate=1
 \\usepackage{fontspec}
 \\usepackage{bidi}
 \\usepackage{xunicode}
 \\usepackage{xltxtra}
-\\setmainfont[Mapping=tex-text]{Linux Libertine O}
 EOF
 
     $preamble_hyperref = "\\usepackage[bookmarks=true,unicode=false,colorlinks=false,plainpages=false,pdfpagelabels,xetex]{hyperref}";
