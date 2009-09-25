@@ -146,7 +146,7 @@ $preamble_hyperref
 % author, title, date
 \\newcommand{\\titleBeowulf}[3]{\\begingroup% 
 \\drop = 0.1\\textheight
-\\raggedleft
+\\raggedright
 \\parindent=0pt
 %\\vspace*{\\drop}
 {\\Large {\\bfseries \\itshape #1}\\\\[2\\baselineskip]}
@@ -172,7 +172,7 @@ $titling = <<"EOF";
 
 \\begin{document}
 \\setRL
-\\raggedleft
+\\raggedright
 \\thispagestyle{empty}
 \\titleBeowulf{$AUTHOR}{$TITLE}{$DATE}
 
