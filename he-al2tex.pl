@@ -170,7 +170,8 @@ $titling = <<"EOF";
 \\date{$DATE}
 
 \\begin{document}
-\\raggedright
+% comment this out (delete the leading %) to have it ragged right
+% \\raggedright
 \\setRL
 %\\raggedright
 \\thispagestyle{empty}
