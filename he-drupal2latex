@@ -19,7 +19,7 @@ mkdir --mode=775 -p $LOGDIRECTORY
 TEXBASENAME=$(basename $1 .xml)
 PDFNAME=$TEXBASENAME.pdf
 MYNAME=$0
-D2LNAME=$(which d2l.sh)
+D2LNAME=$(which he-d2l.sh)
 generate_string () { 
 	if [ "$MYNAME" == "$D2LNAME" ]; then 
 ## start d2l.sh emulation
@@ -45,8 +45,8 @@ fi
 
 rm -f $DESTFILE
 echo "I'll move the pdfs in $PDFDIRECTORY, log in $LOGDIRECTORY" 
-if ! which al2tex.pl > /dev/null ; then 
-	echo "al2tex.pl not in your PATH, please read the TUTORIAL.txt"
+if ! which he-al2tex.pl > /dev/null ; then 
+	echo "he-al2tex.pl not in your PATH, please read the TUTORIAL.txt"
 fi
 
 clean_the_mess () {
@@ -65,7 +65,7 @@ move_the_stuff () {
 }
 
 # process
-al2tex.pl $1 
+he-al2tex.pl $1 
 
 
 echo "TeXing..."

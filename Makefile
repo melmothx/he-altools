@@ -5,6 +5,6 @@ pdfs = $(patsubst %.xml,$(PDFDIRECTORY)/letter/%_letter.pdf,$(wildcard *.xml))
 all : $(pdfs)
 
 $(PDFDIRECTORY)/letter/%_letter.pdf : %.xml
-	PDFDIRECTORY=$(PDFDIRECTORY) TEXDIRECTORY=$(TEXDIRECTORY) drupal2latex $<
+	PDFDIRECTORY=$(PDFDIRECTORY) TEXDIRECTORY=$(TEXDIRECTORY) he-drupal2latex $<
 ##	PDFDIRECTORY=$(PDFDIRECTORY) TEXDIRECTORY=$(TEXDIRECTORY) uploadthepdfs $<
 

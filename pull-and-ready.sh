@@ -250,7 +250,7 @@ cat header.tmp ready.tmp | cat -s  > $filenamefixed
 ( cp ${alibrary_path}logo.{eps,pdf} $WORKINGDIR ) 
 if [ -f "logo.eps" ] && [ -f "logo.pdf" ]
 then 
-	d2l.sh  $filenamefixed
+	he-d2l.sh  $filenamefixed
   PDF_LINK=`cat pdf_string.tmp`
 else
   echo "Skipping pdf build: your alibrary path seems broken"
