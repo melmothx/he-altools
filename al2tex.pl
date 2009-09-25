@@ -96,9 +96,6 @@ while (@body) {
 		if ($2 =~ m/[Cc]hapter 1\b/) {
 			$numchapone++ 
 		} 
-		elsif ($2 =~ m/[Aa]ppendix/) {
-			$numappendix++
-		}
 		elsif ($1 =~ m/h3/) {
 			$isbook++ 
 		} 
@@ -230,8 +227,7 @@ push @dest, $titling ;
 if ($table_of_contents) {push @dest, $table_of_contents }
 
 # variable to mark the tags
-$end_sep = "EndSectioOrChapter";
-$begin_sep = "BeginSectionOrChapter";
+
 $in_verbatim = 0 ;
 # the main loop
 while (@bodynotes) {
@@ -284,17 +280,6 @@ while (@dest) {
 	print DEST "$r"; 
 }
 close(DEST);
-
-
-
-
-
-
-
-
-
-
-
 
 ##### SUBROUTINES ################
 sub check_urls {
