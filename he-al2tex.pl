@@ -202,7 +202,7 @@ $impressum =<<EOL;
 \\begin{minipage}[c]{20em}
 \\begin{center}
 \\noindent Anti-Copyright.\\\\
-http://theanarchistlibrary.org \\\\
+http://hebrew.theanarchistlibrary.org \\\\
 EOL
 
 if ($AUTHOR) {$impressum = join("", $impressum, "כותב/ת: $AUTHOR \\\\")}
