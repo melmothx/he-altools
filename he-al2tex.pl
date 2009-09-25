@@ -151,7 +151,7 @@ $LATEXCODE
 \\vfill
 {\\centering \\Large #3\\par
  \\rule{15em}{0.4pt}\\\\[0.5\\baselineskip]}
-{\\centering \\Large\\scshape The Anarchist Library\\par}
+{\\centering \\Large\\scshape הספרייה האנארכיסטית\\par}
 %\\vspace*{\\drop}
 
 \\endgroup}
@@ -187,7 +187,7 @@ $impressum =<<EOL;
 \\thispagestyle{empty}
 \\begin{center}
 \\noindent
-\\textsc{\\Large The Anarchist Library} 
+\\textsc{\\Large הספרייה האנארכיסטית} 
 
 \\noindent
 \\today\\\\[30pt]
@@ -202,17 +202,17 @@ $impressum =<<EOL;
 \\begin{minipage}[c]{20em}
 \\begin{center}
 \\noindent Anti-Copyright.\\\\
-http://theanarchistlibrary.org \\\\
+http://hebrew.theanarchistlibrary.org \\\\
 EOL
 
-if ($AUTHOR) {$impressum = join("", $impressum, "Author: $AUTHOR \\\\")}
-if ($TITLE) {$impressum = join("\n", $impressum, "Title: $TITLE \\\\")}
+if ($AUTHOR) {$impressum = join("", $impressum, "כותב/ת: $AUTHOR \\\\")}
+if ($TITLE) {$impressum = join("\n", $impressum, "כותרת: $TITLE \\\\")}
 if ($DATE) {
-	$impressum = join("\n", $impressum, "Publication date: $DATE \\\\")
+	$impressum = join("\n", $impressum, "שנת פרסום: $DATE \\\\")
 } else {
-	$impressum = join("\n", $impressum, "Publication date: Unknown \\\\") 
+	$impressum = join("\n", $impressum, "שנת פרסום: לא ידוע \\\\") 
 }
-if ($TOPICS) {$impressum = join("\n", $impressum, "Topics: $TOPICS \\\\")}
+if ($TOPICS) {$impressum = join("\n", $impressum, "נושאים: $TOPICS \\\\")}
 if ($ADC) {$impressum = join("\n", $impressum, "ADC: $ADC \\\\")}
 $impressum = join("\n", $impressum, "\\end{center}\n\\end{minipage}\n\\par } \n\n \\end{center}\n\n\\bigskip\n\\begin{center}");
 if ($SOURCE) {$impressum = join("\n", $impressum, "\\noindent $SOURCE\n")}
