@@ -115,11 +115,12 @@ if ( $numchapone >= 1 ) {
 }
 
 $preamble_fonts = <<"EOF";
-\TeXXeTstate=1
+\\TeXXeTstate=1
 \\usepackage{fontspec}
 \\usepackage{bidi}
 \\usepackage{xunicode}
 \\usepackage{xltxtra}
+\\usepackage{pdfsync}
 EOF
 
     $preamble_hyperref = "\\usepackage[bookmarks=true,unicode=false,colorlinks=false,plainpages=false,pdfpagelabels,xetex]{hyperref}";
@@ -127,7 +128,7 @@ EOF
 $preamble = <<"EOF";
 $preamble_fonts 
 \\usepackage{polyglossia}
-\\setdefaultlanguage[numerals=hebrew]{hebrew}
+\\setdefaultlanguage[numerals=arabic]{hebrew}
 \\setmainfont{Linux Libertine O}
 \\usepackage{url}
 \\usepackage{enumerate}
