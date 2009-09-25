@@ -6,8 +6,6 @@
 
 $filename = $ARGV[0] || die "Please pass a file.xml as argument\n\n";
 
-if ($ARGV[1]) {$xelatex_output = 1} else {$xelatex_output = 0};
-
 -e $filename || die "$filename does not exists\n\n";
 -T $filename || die "$filename doesn't look as a text file, exiting\n\n";
 $outputfile = $filename ; 
@@ -119,32 +117,22 @@ if ( $numchapone >= 1 ) {
 	$dottedtoc = "\\renewcommand{\\cftsecleader}{\\bfseries\\cftdotfill{\\cftdotsep}}" ;
 }
 
-if ($xelatex_output ne 0) {
-	$preamble_fonts = <<"EOF";
+$preamble_fonts = <<"EOF";
 \\usepackage{fontspec}
+\\usepackage{bidi}
 \\usepackage{xunicode}
 \\usepackage{xltxtra}
 \\setmainfont[Mapping=tex-text]{Linux Libertine O}
 EOF
 
-	$preamble_hyperref = "\\usepackage[bookmarks=true,citecolor=black,filecolor=black,linkcolor=black,urlcolor=black,unicode=false,colorlinks=false,plainpages=false,pdfpagelabels,colorlinks=true,xetex]{hyperref}"
-
-} else { 
-	$preamble_fonts = <<"EOF";
-\\usepackage{ucs}
-\\usepackage[utf8x]{inputenc}
-\\usepackage{lmodern}
-\\usepackage[T1]{fontenc}
-\\usepackage{textcomp}
-EOF
-
-	$preamble_hyperref = "\\usepackage[bookmarks=true,citecolor=black,filecolor=black,linkcolor=black,urlcolor=black,unicode=true,colorlinks=false,plainpages=false,pdfpagelabels,colorlinks=true,pdftex]{hyperref}"
-}
-
+    $preamble_hyperref = "\\usepackage[bookmarks=true,citecolor=black,filecolor=black,linkcolor=black,urlcolor=black,unicode=false,colorlinks=false,plainpages=false,pdfpagelabels,colorlinks=true,xetex]{hyperref}";
 
 $preamble = <<"EOF";
 $preamble_fonts 
-\\usepackage[english]{babel}
+\\usepackage{polyglossia}
+\\setdefaultlanguage[numerals=hebrew]{hebrew}
+\\setmainfont{Linux Libertine O}
+
 \\usepackage{url}
 \\usepackage{enumerate}
 \\usepackage{tocloft}
@@ -159,7 +147,7 @@ $preamble_hyperref
 % author, title, date
 \\newcommand{\\titleBeowulf}[3]{\\begingroup% 
 \\drop = 0.1\\textheight
-\\raggedright
+\\raggedleft
 \\parindent=0pt
 %\\vspace*{\\drop}
 {\\Large {\\bfseries \\itshape #1}\\\\[2\\baselineskip]}
@@ -184,6 +172,8 @@ $titling = <<"EOF";
 \\date{$DATE}
 
 \\begin{document}
+\\setRL
+\\raggedleft
 \\thispagestyle{empty}
 \\titleBeowulf{$AUTHOR}{$TITLE}{$DATE}
 
@@ -206,10 +196,9 @@ $impressum =<<EOL;
 \\noindent
 \\today\\\\[30pt]
 % logo
-\\includegraphics[width=35mm,height=35mm]{logo}
+% \\includegraphics[width=35mm,height=35mm]{logo}
 \\end{center}
-
-\\bigskip
+%\\bigskip
 \\vspace{\\stretch{1}}                
 \\begin{footnotesize}
 \\begin{center}
