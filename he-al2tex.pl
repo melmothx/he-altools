@@ -115,12 +115,12 @@ if ( $numchapone >= 1 ) {
 }
 
 $preamble_fonts = <<"EOF";
-\\TeXXeTstate=1
+% \\TeXXeTstate=1
 \\usepackage{fontspec}
-\\usepackage{bidi}
+% \\usepackage{bidi}
 \\usepackage{xunicode}
 \\usepackage{xltxtra}
-\\usepackage{pdfsync}
+% \\usepackage{pdfsync}
 EOF
 
     $preamble_hyperref = "\\usepackage[bookmarks=true,unicode=false,colorlinks=false,plainpages=false,pdfpagelabels,xetex]{hyperref}";
@@ -130,7 +130,8 @@ $preamble_fonts
 \\usepackage{polyglossia}
 \\setdefaultlanguage[numerals=arabic]{hebrew}
 \\setmainfont[Mapping=tex-text]{Linux Libertine O}
-\\newfontfamily{\\hebrewfont}[Mapping=tex-text,HyphenChar=\"5BE,Script=Hebrew]{Linux Libertine O}
+\\newfontfamily{\\hebrewfont}[Mapping=tex-text,%
+HyphenChar=\"5BE,Script=Hebrew]{Linux Libertine O}
 \\usepackage{url}
 \\usepackage{enumerate}
 \\usepackage{tocloft}
