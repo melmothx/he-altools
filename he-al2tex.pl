@@ -317,37 +317,21 @@ sub clean_the_html {
 	$line =~ s/}/\\}/g ;
 	$line =~ s/~/\\~{}/g ;
 	$line =~ s/\^/\\^{}/g ;
+	# see http://en.wikipedia.org/wiki/Left-to-right_mark 
+	# I assume here that the main language is RL. Also, you
+	# can't end the document in LR (it will complain about
+	# missing }. LR can span over multiple lines and paragraphs  
+	$line =~ s/\\&lrm;/\\LR{/g ;
+	$line =~ s/\\&rlm;/}/g ;
 	$line =~ s/<ol\s*type\s*=\s*"(a|A|i|I)"\s*>/<ol$1>/g ;
-	# $line =~ s/“`/``\\thinspace{}`/g ;
-	# $line =~ s/“‘/``\\thinspace{}`/g ;
-	# $line =~ s/‘“/`\\thinspace{}``/g ;
-	# $line =~ s/`“/`\\thinspace{}``/g ;
-	# $line =~ s/'”/'\\thinspace{}''/g ;
-	# $line =~ s/’”/'\\thinspace{}''/g ;
-	# $line =~ s/”’/''\\thinspace{}'/g ;
-	# $line =~ s/”'/''\\thinspace{}'/g ;
 	# duble close
-	$line =~ s/(’|')("|”)/’\\thinspace ”/g ;
-	$line =~ s/("|”)(’|')/”\\thinspace ’/g ;
+	$line =~ s/’”/’\\thinspace ”/g ;
+	$line =~ s/”’/”\\thinspace ’/g ;
 	# duble open
-	$line =~ s/("|“)(`|‘)/“\\thinspace ‘/g ;
-	$line =~ s/(`|‘)("|“)/‘\\thinspace “/g ;
-#	$line =~ s/"\b//g ;
-#	$line =~ s/ "/ ``/g ;
-#	$line =~ s/^"/``/ ;
-#	$line =~ s/"/''/g ;
-#	$line =~ s/ -+ / --- /g ;
-#	$line =~ s/“/``/g;
-#	$line =~ s/”/''/g;
-#	$line =~ s/’/'/g ;
-#	$line =~ s/‘/`/g;
+	$line =~ s/“‘/“\\thinspace ‘/g ;
+	$line =~ s/‘“/‘\\thinspace “/g ;
 	$line =~ s/(\. *){2,5}/\\ldots{}/g ;
 	$line =~ s/…/\\ldots{}/g;
-#	$line =~ s/—/---/g;
-#	$line =~ s/–/---/g;
-#	$line =~ s/--+/---/g;
-#	$line =~ s/(\d)--*(\d)/$1--$2/g;
-#	$line =~ s/----+/---/g;
 	$line =~ s/<em>/\\emph{/g ;
 	$line =~ s/<\/em>/}/g ;
 	$line =~ s/<strong>/\\textbf{/g ;
