@@ -307,7 +307,6 @@ sub clean_the_html {
 	$line =~ s/<p>/\n/g;
 	$line =~ s/<\/p>/\n/g;
 	$line =~ s/\\/BACKSLASHBACKSLASH/g;
-	# try to fix the rtl
 	$line =~ s/#/\\#/g ;
 	$line =~ s/\$/\\\$/g ;
 	$line =~ s/%/\\%/g ;
@@ -320,9 +319,14 @@ sub clean_the_html {
 	# see http://en.wikipedia.org/wiki/Left-to-right_mark 
 	# I assume here that the main language is RL. Also, you
 	# can't end the document in LR (it will complain about
-	# missing }. LR can span over multiple lines and paragraphs  
+	# missing }. LR can span over multiple lines and paragraphs.
+	# you should consider it a tag, which must be opened and
+	# properly closed, rather than a switch. Each footnote in LR
+	# must be enclosed: es:  
+        # [1] &lrm;footnote in english &rlm; 
 	$line =~ s/\\&lrm;/\\LR{/g ;
 	$line =~ s/\\&rlm;/}/g ;
+
 	$line =~ s/<ol\s*type\s*=\s*"(a|A|i|I)"\s*>/<ol$1>/g ;
 	# duble close
 	$line =~ s/’”/’\\thinspace ”/g ;
