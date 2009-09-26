@@ -129,9 +129,9 @@ $preamble = <<"EOF";
 $preamble_fonts 
 \\usepackage{polyglossia}
 \\setdefaultlanguage[numerals=arabic]{hebrew}
-\\setmainfont{Miriam CLM}
 \\newfontfamily{\\hebrewfont}%
-[HyphenChar=\"5BE,Script=Hebrew]{Miriam CLM}
+[Script=Hebrew]{Frank Ruehl CLM}
+\\setmainfont{Frank Ruehl CLM}
 \\usepackage{url}
 \\usepackage{enumerate}
 \\usepackage{tocloft}
