@@ -129,9 +129,9 @@ $preamble = <<"EOF";
 $preamble_fonts 
 \\usepackage{polyglossia}
 \\setdefaultlanguage[numerals=arabic]{hebrew}
-\\setmainfont[Mapping=tex-text]{Linux Libertine O}
+\\setmainfont[Mapping=tex-text]{DejaVu Sans}
 \\newfontfamily{\\hebrewfont}[Mapping=tex-text,%
-HyphenChar=\"5BE,Script=Hebrew]{Linux Libertine O}
+HyphenChar=\"5BE,Script=Hebrew]{DejaVu Sans}
 \\usepackage{url}
 \\usepackage{enumerate}
 \\usepackage{tocloft}
