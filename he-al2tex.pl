@@ -118,7 +118,7 @@ $preamble_fonts = <<"EOF";
 % \\TeXXeTstate=1
 \\usepackage{fontspec}
 % \\usepackage{bidi}
-\\usepackage{xunicode}
+% \\usepackage{xunicode} % deprecated
 \\usepackage{xltxtra}
 % \\usepackage{pdfsync}
 EOF
@@ -129,9 +129,9 @@ $preamble = <<"EOF";
 $preamble_fonts 
 \\usepackage{polyglossia}
 \\setdefaultlanguage[numerals=arabic]{hebrew}
-\\setmainfont[Mapping=tex-text]{Miriam CLM}
-\\newfontfamily{\\hebrewfont}[Mapping=tex-text,%
-HyphenChar=\"5BE,Script=Hebrew]{Miriam CLM}
+\\setmainfont{Miriam CLM}
+\\newfontfamily{\\hebrewfont}%
+[HyphenChar=\"5BE,Script=Hebrew]{Miriam CLM}
 \\usepackage{url}
 \\usepackage{enumerate}
 \\usepackage{tocloft}
