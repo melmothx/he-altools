@@ -69,7 +69,7 @@ he-al2tex.pl $1
 
 
 echo "TeXing..."
-
+$TEXBACKEND -halt-on-error $DESTFILE 
 ( $TEXBACKEND -halt-on-error $DESTFILE > /dev/null )
 
 if [ "$?" != "0" ]; then
