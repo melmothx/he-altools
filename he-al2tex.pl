@@ -172,9 +172,8 @@ $titling = <<"EOF";
 
 \\begin{document}
 % comment this out (delete the leading %) to have it ragged right
-% \\raggedright
 \\setRL
-%\\raggedright
+%%%%\\raggedright%%%%
 \\thispagestyle{empty}
 \\titleBeowulf{$AUTHOR}{$TITLE}{$DATE}
 

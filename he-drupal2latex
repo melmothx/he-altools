@@ -127,7 +127,7 @@ compile_a5 () {
 }
 # compile the a5 to be imposed in the a4 
 sed -i "1s/\(\\documentclass\)\(.*\)letterpaper\(.*\)/\1\2a5paper\3/" $DESTFILE
-sed -i "/^% *\\raggedright */s/%//" $DESTFILE
+sed -i '/^%%%*\\raggedright%%%*/s/%%%%\(\\raggedright\)%%%%*/\1/' $DESTFILE
 # get rid of the hyperref package, first 
 # sed -i '1,30s/^ *\\usepackage.*hyperref} *$//' $DESTFILE
 
